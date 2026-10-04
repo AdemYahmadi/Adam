@@ -11,13 +11,25 @@
     <meta name="theme-color" content="#0a0a0b" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="InfraLens" />
-    <meta property="og:title" content="InfraLens — See your Proxmox homelab. Ask it anything." />
-    <meta property="og:description" content="A live map of every node, VM and container, and a local model that answers questions about them." />
+    <meta
+      property="og:title"
+      content="InfraLens — See your Proxmox homelab. Ask it anything."
+    />
+    <meta
+      property="og:description"
+      content="A live map of every node, VM and container, and a local model that answers questions about them."
+    />
     <meta property="og:url" content="https://adamyahmadi.com/infralens.html" />
-    <meta property="og:image" content="https://adamyahmadi.com/assets/infralens/og.png" />
+    <meta
+      property="og:image"
+      content="https://adamyahmadi.com/assets/infralens/og.png"
+    />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="The InfraLens topology: the ADAMLAB host connected to nextcloud, homepage, tailscale and pihole." />
+    <meta
+      property="og:image:alt"
+      content="The InfraLens topology: the ADAMLAB host connected to nextcloud, homepage, tailscale and pihole."
+    />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -214,6 +226,11 @@
       .nav-links a[aria-current="true"] {
         color: var(--g-ink);
       }
+      .nav-toggle,
+      .nav-close,
+      .nav-backdrop {
+        display: none;
+      }
       .nav-end {
         display: flex;
         align-items: center;
@@ -244,7 +261,11 @@
 
       .canvas {
         background-color: var(--g0);
-        background-image: radial-gradient(circle, var(--g-dot) 1px, transparent 1.4px);
+        background-image: radial-gradient(
+          circle,
+          var(--g-dot) 1px,
+          transparent 1.4px
+        );
         background-size: 28px 28px;
         color: var(--g-ink);
       }
@@ -382,7 +403,7 @@
         padding: 0 var(--gut) 0.5rem;
       }
       .win-inner {
-        width: clamp(1180px, 100%, 1402px);
+        width: min(100%, 1402px);
         margin: 0 auto;
       }
       .win-notes {
@@ -580,22 +601,22 @@
         gap: clamp(1.25rem, 2.5vw, 2rem);
       }
       .vital-shot {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        --pad: clamp(1.25rem, 4vw, 3.5rem);
+        position: relative;
         width: 100%;
         aspect-ratio: 16 / 9;
-        padding: clamp(1.25rem, 4vw, 3.5rem);
         border: 1px solid #1f1f23;
         border-radius: 12px;
         background: #0d0d0f;
       }
       .vital-shot img {
+        position: absolute;
+        inset: var(--pad);
+        margin: auto;
         width: auto;
         height: auto;
-        max-width: 100%;
-        max-height: 100%;
-        min-height: 0;
+        max-width: calc(100% - 2 * var(--pad));
+        max-height: calc(100% - 2 * var(--pad));
       }
       .vital figcaption {
         margin-top: 1.25rem;
@@ -1281,31 +1302,78 @@
         }
       }
       @media (max-width: 980px) {
-        .nav .wrap {
-          flex-wrap: wrap;
-          height: auto;
-          gap: 0 1rem;
-          padding-top: 0.6rem;
-        }
         .nav-end {
           margin-left: auto;
+          gap: 0.6rem;
+        }
+        .nav-toggle,
+        .nav-close {
+          display: grid;
+          place-items: center;
+          width: 40px;
+          height: 40px;
+          padding: 0;
+          border: 1px solid var(--g-rule-2);
+          border-radius: 8px;
+          background: transparent;
+          color: var(--g-ink);
+          cursor: pointer;
+        }
+        .nav-toggle svg,
+        .nav-close svg {
+          width: 20px;
+          height: 20px;
         }
         .nav nav {
-          order: 3;
-          width: 100%;
-          margin-left: 0;
-          overflow-x: auto;
-          scrollbar-width: none;
+          position: fixed;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 60;
+          width: min(80vw, 320px);
+          margin: 0;
+          padding: 1rem 1.5rem 2rem;
+          background: var(--g0);
+          border-left: 1px solid var(--g-rule-2);
+          transform: translateX(100%);
+          visibility: hidden;
+          transition:
+            transform 0.25s ease,
+            visibility 0s 0.25s;
         }
-        .nav nav::-webkit-scrollbar {
-          display: none;
+        .nav.open nav {
+          transform: none;
+          visibility: visible;
+          transition: transform 0.25s ease;
+        }
+        .nav-close {
+          margin: 0 0 1.5rem auto;
         }
         .nav-links {
-          gap: 1.25rem;
-          padding: 0.15rem 0 0.2rem;
-          white-space: nowrap;
+          flex-direction: column;
+          gap: 0;
         }
-        .nav-links a,
+        .nav-links a {
+          display: block;
+          padding: 0.9rem 0;
+          border-bottom: 1px solid var(--g-rule);
+          font-size: 1.15rem;
+          color: var(--g-ink-2);
+        }
+        .nav-backdrop {
+          display: block;
+          position: fixed;
+          inset: 0;
+          z-index: 55;
+          background: rgba(0, 0, 0, 0.55);
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.25s ease;
+        }
+        .nav.open .nav-backdrop {
+          opacity: 1;
+          pointer-events: auto;
+        }
         .foot-links a,
         .release a {
           display: inline-block;
@@ -1327,9 +1395,6 @@
         .b-get {
           height: 42px;
           justify-content: center;
-        }
-        html {
-          scroll-padding-top: 104px;
         }
         .hero-top {
           grid-template-columns: minmax(0, 1fr);
@@ -1381,8 +1446,7 @@
           grid-template-columns: minmax(0, 1fr);
         }
         .onboard-shot {
-          width: 760px;
-          max-width: none;
+          width: 100%;
         }
       }
       @media (max-width: 720px) {
@@ -1400,13 +1464,13 @@
           border-top: 1px solid var(--g-rule);
         }
         .win-inner {
-          width: 1100px;
+          width: 100%;
           margin: 0;
         }
+        .graph svg {
+          min-width: 0;
+        }
         .win-notes {
-          position: sticky;
-          left: 0;
-          width: calc(100vw - 32px);
           grid-template-columns: minmax(0, 1fr);
           gap: 1.5rem;
           margin-bottom: 2rem;
@@ -1432,8 +1496,20 @@
         <a href="#top" class="brand" aria-label="InfraLens home">
           <span class="brand-tile">
             <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
-              <path d="M16 4.5 26 10.5v11L16 27.5 6 21.5v-11Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" opacity="0.85" />
-              <path d="M16 16V7.5M16 16l7 4M16 16l-7 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.5" />
+              <path
+                d="M16 4.5 26 10.5v11L16 27.5 6 21.5v-11Z"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linejoin="round"
+                opacity="0.85"
+              />
+              <path
+                d="M16 16V7.5M16 16l7 4M16 16l-7 4"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                opacity="0.5"
+              />
               <circle cx="16" cy="7.5" r="1.7" fill="currentColor" />
               <circle cx="23" cy="20" r="1.7" fill="currentColor" />
               <circle cx="9" cy="20" r="1.7" fill="currentColor" />
@@ -1442,7 +1518,17 @@
           </span>
           InfraLens
         </a>
-        <nav aria-label="Sections">
+        <nav id="site-nav" aria-label="Sections">
+          <button class="nav-close" type="button" aria-label="Close menu">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M6 6l12 12M18 6 6 18"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
           <ul class="nav-links">
             <li><a href="#tour">Overview</a></li>
             <li><a href="#topology">Topology</a></li>
@@ -1466,21 +1552,38 @@
             </svg>
           </a>
           <a class="btn btn-light" href="#install">Get InfraLens</a>
+          <button
+            class="nav-toggle"
+            type="button"
+            aria-label="Open menu"
+            aria-controls="site-nav"
+            aria-expanded="false"
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M4 7h16M4 12h16M4 17h16"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
         </div>
       </div>
+      <div class="nav-backdrop" aria-hidden="true"></div>
     </header>
 
     <main id="top">
       <section class="hero canvas">
         <div class="wrap hero-top">
-            <h1>
-              See your Pro<b class="px">x</b>mo<b class="px">x</b> homelab.
-              <span>Ask it anything.</span>
-            </h1>
+          <h1>
+            See your Pro<b class="px">x</b>mo<b class="px">x</b> homelab.
+            <span>Ask it anything.</span>
+          </h1>
           <div class="hero-side">
             <p class="lede">
-              A live map of every node, VM and container, and a local model
-              that answers questions about them.
+              A live map of every node, VM and container, and a local model that
+              answers questions about them.
             </p>
             <div class="get">
               <a class="btn btn-light" href="#tour">See it in action</a>
@@ -1496,79 +1599,360 @@
         </div>
 
         <div class="hero-canvas">
-            <figure class="graph wrap">
+          <figure class="graph wrap">
             <div class="graph-pan">
-              <svg class="tsvg" viewBox="-4 45 788 260" role="img" aria-label="Topology of ADAMLAB, a Proxmox host, connected to its containers nextcloud, homepage, tailscale and pihole. Every container also has a DNS edge to pihole, the network's resolver.">
+              <svg
+                class="tsvg"
+                viewBox="-4 45 788 260"
+                role="img"
+                aria-label="Topology of ADAMLAB, a Proxmox host, connected to its containers nextcloud, homepage, tailscale and pihole. Every container also has a DNS edge to pihole, the network's resolver."
+              >
                 <defs>
-                  <symbol id="i-server" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="8" x="2" y="2" rx="2" /><rect width="20" height="8" x="2" y="14" rx="2" /><path d="M6 6h.01M6 18h.01" /></symbol>
-                  <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20" /></symbol>
-                  <symbol id="i-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" /></symbol>
-                  <symbol id="i-harddrive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12H2M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11zM6 16h.01M10 16h.01" /></symbol>
-                  <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /><path d="m9 12 2 2 4-4" /></symbol>
-                  <symbol id="i-database" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3" /><path d="M3 5v14a9 3 0 0 0 18 0V5M3 12a9 3 0 0 0 18 0" /></symbol>
-                  <symbol id="i-layout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="7" x="3" y="3" rx="1" /><rect width="9" height="7" x="3" y="14" rx="1" /><rect width="5" height="7" x="16" y="14" rx="1" /></symbol>
+                  <symbol
+                    id="i-server"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect width="20" height="8" x="2" y="2" rx="2" />
+                    <rect width="20" height="8" x="2" y="14" rx="2" />
+                    <path d="M6 6h.01M6 18h.01" />
+                  </symbol>
+                  <symbol
+                    id="i-globe"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <path
+                      d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"
+                    />
+                  </symbol>
+                  <symbol
+                    id="i-activity"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"
+                    />
+                  </symbol>
+                  <symbol
+                    id="i-harddrive"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M22 12H2M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11zM6 16h.01M10 16h.01"
+                    />
+                  </symbol>
+                  <symbol
+                    id="i-shield"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+                    />
+                    <path d="m9 12 2 2 4-4" />
+                  </symbol>
+                  <symbol
+                    id="i-database"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <ellipse cx="12" cy="5" rx="9" ry="3" />
+                    <path d="M3 5v14a9 3 0 0 0 18 0V5M3 12a9 3 0 0 0 18 0" />
+                  </symbol>
+                  <symbol
+                    id="i-layout"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect width="18" height="7" x="3" y="3" rx="1" />
+                    <rect width="9" height="7" x="3" y="14" rx="1" />
+                    <rect width="5" height="7" x="16" y="14" rx="1" />
+                  </symbol>
                 </defs>
                 <g aria-hidden="true">
-                  <path class="edge-path" stroke="#0ea5e9" d="M184,127.5 C242,127.5 242,80 300,80" />
-                  <path class="edge-path" stroke="#f43f5e" d="M184,127.5 C242,127.5 242,175 300,175" />
-                  <path class="edge-path" stroke="#8b5cf6" d="M184,127.5 C242,127.5 242,270 300,270" />
-                  <path class="edge-path" stroke="#10b981" d="M184,127.5 L596,127.5" />
-                  <path class="edge-path" stroke="#10b981" d="M484,80 C540,80 540,127.5 596,127.5" />
-                  <path class="edge-path" stroke="#10b981" d="M484,175 C540,175 540,127.5 596,127.5" />
-                  <path class="edge-path" stroke="#10b981" d="M484,270 C540,270 540,127.5 596,127.5" />
-                  <g class="e-label"><rect x="527" y="96.75" width="26" height="14" rx="2" /><text x="540" y="106.75" text-anchor="middle">DNS</text></g>
-                  <g class="e-label"><rect x="527" y="144.25" width="26" height="14" rx="2" /><text x="540" y="154.25" text-anchor="middle">DNS</text></g>
-                  <g class="e-label"><rect x="527" y="191.75" width="26" height="14" rx="2" /><text x="540" y="201.75" text-anchor="middle">DNS</text></g>
+                  <path
+                    class="edge-path"
+                    stroke="#0ea5e9"
+                    d="M184,127.5 C242,127.5 242,80 300,80"
+                  />
+                  <path
+                    class="edge-path"
+                    stroke="#f43f5e"
+                    d="M184,127.5 C242,127.5 242,175 300,175"
+                  />
+                  <path
+                    class="edge-path"
+                    stroke="#8b5cf6"
+                    d="M184,127.5 C242,127.5 242,270 300,270"
+                  />
+                  <path
+                    class="edge-path"
+                    stroke="#10b981"
+                    d="M184,127.5 L596,127.5"
+                  />
+                  <path
+                    class="edge-path"
+                    stroke="#10b981"
+                    d="M484,80 C540,80 540,127.5 596,127.5"
+                  />
+                  <path
+                    class="edge-path"
+                    stroke="#10b981"
+                    d="M484,175 C540,175 540,127.5 596,127.5"
+                  />
+                  <path
+                    class="edge-path"
+                    stroke="#10b981"
+                    d="M484,270 C540,270 540,127.5 596,127.5"
+                  />
+                  <g class="e-label">
+                    <rect x="527" y="96.75" width="26" height="14" rx="2" />
+                    <text x="540" y="106.75" text-anchor="middle">DNS</text>
+                  </g>
+                  <g class="e-label">
+                    <rect x="527" y="144.25" width="26" height="14" rx="2" />
+                    <text x="540" y="154.25" text-anchor="middle">DNS</text>
+                  </g>
+                  <g class="e-label">
+                    <rect x="527" y="191.75" width="26" height="14" rx="2" />
+                    <text x="540" y="201.75" text-anchor="middle">DNS</text>
+                  </g>
                   <g class="n n-host">
-                  <rect class="n-box" x="0.5" y="103" width="183" height="49" rx="8" />
-                  <rect x="1" y="103.5" width="3" height="48" fill="#f4f4f5" />
-                  <rect x="16" y="113.5" width="28" height="28" rx="6" fill="#f4f4f5" />
-                  <use href="#i-server" x="23" y="120.5" width="14" height="14" style="color:#18181b" />
-                  <text class="n-label" x="54" y="125.5">ADAMLAB</text>
-                  <circle cx="57" cy="136" r="3" fill="#10b981" />
-                  <text class="n-status" x="64" y="139.5">Online</text>
-                  <line class="n-div" x1="136.5" y1="115.5" x2="136.5" y2="139.5" />
-                  <text class="n-kind" x="172" y="130.5" text-anchor="end">HOST</text>
+                    <rect
+                      class="n-box"
+                      x="0.5"
+                      y="103"
+                      width="183"
+                      height="49"
+                      rx="8"
+                    />
+                    <rect
+                      x="1"
+                      y="103.5"
+                      width="3"
+                      height="48"
+                      fill="#f4f4f5"
+                    />
+                    <rect
+                      x="16"
+                      y="113.5"
+                      width="28"
+                      height="28"
+                      rx="6"
+                      fill="#f4f4f5"
+                    />
+                    <use
+                      href="#i-server"
+                      x="23"
+                      y="120.5"
+                      width="14"
+                      height="14"
+                      style="color: #18181b"
+                    />
+                    <text class="n-label" x="54" y="125.5">ADAMLAB</text>
+                    <circle cx="57" cy="136" r="3" fill="#10b981" />
+                    <text class="n-status" x="64" y="139.5">Online</text>
+                    <line
+                      class="n-div"
+                      x1="136.5"
+                      y1="115.5"
+                      x2="136.5"
+                      y2="139.5"
+                    />
+                    <text class="n-kind" x="172" y="130.5" text-anchor="end">
+                      HOST
+                    </text>
                   </g>
                   <g class="n n-sel">
-                  <rect class="n-box" x="300.5" y="55.5" width="183" height="49" rx="8" />
-                  <rect x="312" y="66" width="28" height="28" rx="6" fill="#f4f4f5" />
-                  <use href="#i-harddrive" x="319" y="73" width="14" height="14" style="color:#18181b" />
-                  <text class="n-label" x="350" y="78">nextcloud</text>
-                  <circle cx="353" cy="88.5" r="3" fill="#10b981" />
-                  <text class="n-status" x="360" y="92">Running</text>
-                  <line class="n-div" x1="449.5" y1="68" x2="449.5" y2="92" />
-                  <text class="n-kind" x="472" y="83" text-anchor="end">CT</text>
+                    <rect
+                      class="n-box"
+                      x="300.5"
+                      y="55.5"
+                      width="183"
+                      height="49"
+                      rx="8"
+                    />
+                    <rect
+                      x="312"
+                      y="66"
+                      width="28"
+                      height="28"
+                      rx="6"
+                      fill="#f4f4f5"
+                    />
+                    <use
+                      href="#i-harddrive"
+                      x="319"
+                      y="73"
+                      width="14"
+                      height="14"
+                      style="color: #18181b"
+                    />
+                    <text class="n-label" x="350" y="78">nextcloud</text>
+                    <circle cx="353" cy="88.5" r="3" fill="#10b981" />
+                    <text class="n-status" x="360" y="92">Running</text>
+                    <line class="n-div" x1="449.5" y1="68" x2="449.5" y2="92" />
+                    <text class="n-kind" x="472" y="83" text-anchor="end">
+                      CT
+                    </text>
                   </g>
                   <g class="n">
-                  <rect class="n-box" x="300.5" y="150.5" width="183" height="49" rx="8" />
-                  <rect x="312.5" y="161.5" width="27" height="27" rx="6" fill="#f43f5e" fill-opacity="0.1" stroke="#f43f5e" stroke-opacity="0.2" />
-                  <use href="#i-activity" x="319" y="168" width="14" height="14" style="color:#f43f5e" />
-                  <text class="n-label" x="350" y="173">homepage</text>
-                  <circle cx="353" cy="183.5" r="3" fill="#10b981" />
-                  <text class="n-status" x="360" y="187">Running</text>
-                  <line class="n-div" x1="449.5" y1="163" x2="449.5" y2="187" />
-                  <text class="n-kind" x="472" y="178" text-anchor="end">CT</text>
+                    <rect
+                      class="n-box"
+                      x="300.5"
+                      y="150.5"
+                      width="183"
+                      height="49"
+                      rx="8"
+                    />
+                    <rect
+                      x="312.5"
+                      y="161.5"
+                      width="27"
+                      height="27"
+                      rx="6"
+                      fill="#f43f5e"
+                      fill-opacity="0.1"
+                      stroke="#f43f5e"
+                      stroke-opacity="0.2"
+                    />
+                    <use
+                      href="#i-activity"
+                      x="319"
+                      y="168"
+                      width="14"
+                      height="14"
+                      style="color: #f43f5e"
+                    />
+                    <text class="n-label" x="350" y="173">homepage</text>
+                    <circle cx="353" cy="183.5" r="3" fill="#10b981" />
+                    <text class="n-status" x="360" y="187">Running</text>
+                    <line
+                      class="n-div"
+                      x1="449.5"
+                      y1="163"
+                      x2="449.5"
+                      y2="187"
+                    />
+                    <text class="n-kind" x="472" y="178" text-anchor="end">
+                      CT
+                    </text>
                   </g>
                   <g class="n">
-                  <rect class="n-box" x="300.5" y="245.5" width="183" height="49" rx="8" />
-                  <rect x="312.5" y="256.5" width="27" height="27" rx="6" fill="#8b5cf6" fill-opacity="0.1" stroke="#8b5cf6" stroke-opacity="0.2" />
-                  <use href="#i-globe" x="319" y="263" width="14" height="14" style="color:#8b5cf6" />
-                  <text class="n-label" x="350" y="268">tailscale</text>
-                  <circle cx="353" cy="278.5" r="3" fill="#10b981" />
-                  <text class="n-status" x="360" y="282">Running</text>
-                  <line class="n-div" x1="449.5" y1="258" x2="449.5" y2="282" />
-                  <text class="n-kind" x="472" y="273" text-anchor="end">CT</text>
+                    <rect
+                      class="n-box"
+                      x="300.5"
+                      y="245.5"
+                      width="183"
+                      height="49"
+                      rx="8"
+                    />
+                    <rect
+                      x="312.5"
+                      y="256.5"
+                      width="27"
+                      height="27"
+                      rx="6"
+                      fill="#8b5cf6"
+                      fill-opacity="0.1"
+                      stroke="#8b5cf6"
+                      stroke-opacity="0.2"
+                    />
+                    <use
+                      href="#i-globe"
+                      x="319"
+                      y="263"
+                      width="14"
+                      height="14"
+                      style="color: #8b5cf6"
+                    />
+                    <text class="n-label" x="350" y="268">tailscale</text>
+                    <circle cx="353" cy="278.5" r="3" fill="#10b981" />
+                    <text class="n-status" x="360" y="282">Running</text>
+                    <line
+                      class="n-div"
+                      x1="449.5"
+                      y1="258"
+                      x2="449.5"
+                      y2="282"
+                    />
+                    <text class="n-kind" x="472" y="273" text-anchor="end">
+                      CT
+                    </text>
                   </g>
                   <g class="n">
-                  <rect class="n-box" x="596.5" y="103" width="183" height="49" rx="8" />
-                  <rect x="608.5" y="114" width="27" height="27" rx="6" fill="#10b981" fill-opacity="0.1" stroke="#10b981" stroke-opacity="0.2" />
-                  <use href="#i-shield" x="615" y="120.5" width="14" height="14" style="color:#10b981" />
-                  <text class="n-label" x="646" y="125.5">pihole</text>
-                  <circle cx="649" cy="136" r="3" fill="#10b981" />
-                  <text class="n-status" x="656" y="139.5">Running</text>
-                  <line class="n-div" x1="745.5" y1="115.5" x2="745.5" y2="139.5" />
-                  <text class="n-kind" x="768" y="130.5" text-anchor="end">CT</text>
+                    <rect
+                      class="n-box"
+                      x="596.5"
+                      y="103"
+                      width="183"
+                      height="49"
+                      rx="8"
+                    />
+                    <rect
+                      x="608.5"
+                      y="114"
+                      width="27"
+                      height="27"
+                      rx="6"
+                      fill="#10b981"
+                      fill-opacity="0.1"
+                      stroke="#10b981"
+                      stroke-opacity="0.2"
+                    />
+                    <use
+                      href="#i-shield"
+                      x="615"
+                      y="120.5"
+                      width="14"
+                      height="14"
+                      style="color: #10b981"
+                    />
+                    <text class="n-label" x="646" y="125.5">pihole</text>
+                    <circle cx="649" cy="136" r="3" fill="#10b981" />
+                    <text class="n-status" x="656" y="139.5">Running</text>
+                    <line
+                      class="n-div"
+                      x1="745.5"
+                      y1="115.5"
+                      x2="745.5"
+                      y2="139.5"
+                    />
+                    <text class="n-kind" x="768" y="130.5" text-anchor="end">
+                      CT
+                    </text>
                   </g>
                 </g>
               </svg>
@@ -1613,12 +1997,16 @@
               data-dpr="2"
               aria-label="Open the InfraLens screenshot"
             >
-              <picture><source srcset="assets/infralens/chat-interface.webp" type="image/webp" /><img
-                src="assets/infralens/chat-interface.png"
-                alt="The InfraLens app in dark mode. Left: details for the nextcloud container, running, CPU 0.1%, memory 284.0 MB of 2 GB, disk 2.8 of 97.9 GB, download 143.4 B/s, upload 12.0 B/s, power controls, an hour of CPU and memory history, IP 192.168.178.4, uptime 55 minutes and its services. Middle: the live topology of the ADAMLAB host and its containers pihole, tailscale, nextcloud and homepage. Right: the assistant answering “Anything need attention?” by pointing out that tailscale has only been up for 4 minutes."
-                width="1800"
-                height="1126"
-                fetchpriority="high"
+              <picture
+                ><source
+                  srcset="assets/infralens/chat-interface.webp"
+                  type="image/webp" />
+                <img
+                  src="assets/infralens/chat-interface.png"
+                  alt="The InfraLens app in dark mode. Left: details for the nextcloud container, running, CPU 0.1%, memory 284.0 MB of 2 GB, disk 2.8 of 97.9 GB, download 143.4 B/s, upload 12.0 B/s, power controls, an hour of CPU and memory history, IP 192.168.178.4, uptime 55 minutes and its services. Middle: the live topology of the ADAMLAB host and its containers pihole, tailscale, nextcloud and homepage. Right: the assistant answering “Anything need attention?” by pointing out that tailscale has only been up for 4 minutes."
+                  width="1800"
+                  height="1126"
+                  fetchpriority="high"
               /></picture>
             </button>
           </div>
@@ -1629,108 +2017,290 @@
         <div class="wrap topo-wrap">
           <div class="sec-head">
             <h2>Edges that mean something.</h2>
-            <p class="lede">Each edge takes the color of what runs inside the guest.</p>
+            <p class="lede">
+              Each edge takes the color of what runs inside the guest.
+            </p>
           </div>
           <ul class="legend" aria-label="Edge colors">
             <li>
               <svg class="tsvg" viewBox="0 0 300 54" aria-hidden="true">
-              <circle class="stub" cx="6" cy="27" r="3.5" />
-              <path class="edge-path" stroke="#10b981" d="M10,27 C62,27 62,27 114,27" />
-              <g class="n">
-              <rect class="n-box" x="114.5" y="2.5" width="183" height="49" rx="8" />
-              <rect x="126.5" y="13.5" width="27" height="27" rx="6" fill="#10b981" fill-opacity="0.1" stroke="#10b981" stroke-opacity="0.2" />
-              <use href="#i-shield" x="133" y="20" width="14" height="14" style="color:#10b981" />
-              <text class="n-label" x="164" y="25">pihole</text>
-              <circle cx="167" cy="35.5" r="3" fill="#10b981" />
-              <text class="n-status" x="174" y="39">Running</text>
-              <line class="n-div" x1="263.5" y1="15" x2="263.5" y2="39" />
-              <text class="n-kind" x="286" y="30" text-anchor="end">CT</text>
-              </g>
+                <circle class="stub" cx="6" cy="27" r="3.5" />
+                <path
+                  class="edge-path"
+                  stroke="#10b981"
+                  d="M10,27 C62,27 62,27 114,27"
+                />
+                <g class="n">
+                  <rect
+                    class="n-box"
+                    x="114.5"
+                    y="2.5"
+                    width="183"
+                    height="49"
+                    rx="8"
+                  />
+                  <rect
+                    x="126.5"
+                    y="13.5"
+                    width="27"
+                    height="27"
+                    rx="6"
+                    fill="#10b981"
+                    fill-opacity="0.1"
+                    stroke="#10b981"
+                    stroke-opacity="0.2"
+                  />
+                  <use
+                    href="#i-shield"
+                    x="133"
+                    y="20"
+                    width="14"
+                    height="14"
+                    style="color: #10b981"
+                  />
+                  <text class="n-label" x="164" y="25">pihole</text>
+                  <circle cx="167" cy="35.5" r="3" fill="#10b981" />
+                  <text class="n-status" x="174" y="39">Running</text>
+                  <line class="n-div" x1="263.5" y1="15" x2="263.5" y2="39" />
+                  <text class="n-kind" x="286" y="30" text-anchor="end">
+                    CT
+                  </text>
+                </g>
               </svg>
               <span>DNS / Security</span>
             </li>
             <li>
               <svg class="tsvg" viewBox="0 0 300 54" aria-hidden="true">
-              <circle class="stub" cx="6" cy="27" r="3.5" />
-              <path class="edge-path" stroke="#0ea5e9" d="M10,27 C62,27 62,27 114,27" />
-              <g class="n">
-              <rect class="n-box" x="114.5" y="2.5" width="183" height="49" rx="8" />
-              <rect x="126.5" y="13.5" width="27" height="27" rx="6" fill="#0ea5e9" fill-opacity="0.1" stroke="#0ea5e9" stroke-opacity="0.2" />
-              <use href="#i-harddrive" x="133" y="20" width="14" height="14" style="color:#0ea5e9" />
-              <text class="n-label" x="164" y="25">nextcloud</text>
-              <circle cx="167" cy="35.5" r="3" fill="#10b981" />
-              <text class="n-status" x="174" y="39">Running</text>
-              <line class="n-div" x1="263.5" y1="15" x2="263.5" y2="39" />
-              <text class="n-kind" x="286" y="30" text-anchor="end">CT</text>
-              </g>
+                <circle class="stub" cx="6" cy="27" r="3.5" />
+                <path
+                  class="edge-path"
+                  stroke="#0ea5e9"
+                  d="M10,27 C62,27 62,27 114,27"
+                />
+                <g class="n">
+                  <rect
+                    class="n-box"
+                    x="114.5"
+                    y="2.5"
+                    width="183"
+                    height="49"
+                    rx="8"
+                  />
+                  <rect
+                    x="126.5"
+                    y="13.5"
+                    width="27"
+                    height="27"
+                    rx="6"
+                    fill="#0ea5e9"
+                    fill-opacity="0.1"
+                    stroke="#0ea5e9"
+                    stroke-opacity="0.2"
+                  />
+                  <use
+                    href="#i-harddrive"
+                    x="133"
+                    y="20"
+                    width="14"
+                    height="14"
+                    style="color: #0ea5e9"
+                  />
+                  <text class="n-label" x="164" y="25">nextcloud</text>
+                  <circle cx="167" cy="35.5" r="3" fill="#10b981" />
+                  <text class="n-status" x="174" y="39">Running</text>
+                  <line class="n-div" x1="263.5" y1="15" x2="263.5" y2="39" />
+                  <text class="n-kind" x="286" y="30" text-anchor="end">
+                    CT
+                  </text>
+                </g>
               </svg>
               <span>Storage</span>
             </li>
             <li>
               <svg class="tsvg" viewBox="0 0 300 54" aria-hidden="true">
-              <circle class="stub" cx="6" cy="27" r="3.5" />
-              <path class="edge-path" stroke="#8b5cf6" d="M10,27 C62,27 62,27 114,27" />
-              <g class="n">
-              <rect class="n-box" x="114.5" y="2.5" width="183" height="49" rx="8" />
-              <rect x="126.5" y="13.5" width="27" height="27" rx="6" fill="#8b5cf6" fill-opacity="0.1" stroke="#8b5cf6" stroke-opacity="0.2" />
-              <use href="#i-globe" x="133" y="20" width="14" height="14" style="color:#8b5cf6" />
-              <text class="n-label" x="164" y="25">tailscale</text>
-              <circle cx="167" cy="35.5" r="3" fill="#10b981" />
-              <text class="n-status" x="174" y="39">Running</text>
-              <line class="n-div" x1="263.5" y1="15" x2="263.5" y2="39" />
-              <text class="n-kind" x="286" y="30" text-anchor="end">CT</text>
-              </g>
+                <circle class="stub" cx="6" cy="27" r="3.5" />
+                <path
+                  class="edge-path"
+                  stroke="#8b5cf6"
+                  d="M10,27 C62,27 62,27 114,27"
+                />
+                <g class="n">
+                  <rect
+                    class="n-box"
+                    x="114.5"
+                    y="2.5"
+                    width="183"
+                    height="49"
+                    rx="8"
+                  />
+                  <rect
+                    x="126.5"
+                    y="13.5"
+                    width="27"
+                    height="27"
+                    rx="6"
+                    fill="#8b5cf6"
+                    fill-opacity="0.1"
+                    stroke="#8b5cf6"
+                    stroke-opacity="0.2"
+                  />
+                  <use
+                    href="#i-globe"
+                    x="133"
+                    y="20"
+                    width="14"
+                    height="14"
+                    style="color: #8b5cf6"
+                  />
+                  <text class="n-label" x="164" y="25">tailscale</text>
+                  <circle cx="167" cy="35.5" r="3" fill="#10b981" />
+                  <text class="n-status" x="174" y="39">Running</text>
+                  <line class="n-div" x1="263.5" y1="15" x2="263.5" y2="39" />
+                  <text class="n-kind" x="286" y="30" text-anchor="end">
+                    CT
+                  </text>
+                </g>
               </svg>
               <span>Network</span>
             </li>
             <li>
               <svg class="tsvg" viewBox="0 0 300 54" aria-hidden="true">
-              <circle class="stub" cx="6" cy="27" r="3.5" />
-              <path class="edge-path" stroke="#f43f5e" d="M10,27 C62,27 62,27 114,27" />
-              <g class="n">
-              <rect class="n-box" x="114.5" y="2.5" width="183" height="49" rx="8" />
-              <rect x="126.5" y="13.5" width="27" height="27" rx="6" fill="#f43f5e" fill-opacity="0.1" stroke="#f43f5e" stroke-opacity="0.2" />
-              <use href="#i-activity" x="133" y="20" width="14" height="14" style="color:#f43f5e" />
-              <text class="n-label" x="164" y="25">homepage</text>
-              <circle cx="167" cy="35.5" r="3" fill="#10b981" />
-              <text class="n-status" x="174" y="39">Running</text>
-              <line class="n-div" x1="263.5" y1="15" x2="263.5" y2="39" />
-              <text class="n-kind" x="286" y="30" text-anchor="end">CT</text>
-              </g>
+                <circle class="stub" cx="6" cy="27" r="3.5" />
+                <path
+                  class="edge-path"
+                  stroke="#f43f5e"
+                  d="M10,27 C62,27 62,27 114,27"
+                />
+                <g class="n">
+                  <rect
+                    class="n-box"
+                    x="114.5"
+                    y="2.5"
+                    width="183"
+                    height="49"
+                    rx="8"
+                  />
+                  <rect
+                    x="126.5"
+                    y="13.5"
+                    width="27"
+                    height="27"
+                    rx="6"
+                    fill="#f43f5e"
+                    fill-opacity="0.1"
+                    stroke="#f43f5e"
+                    stroke-opacity="0.2"
+                  />
+                  <use
+                    href="#i-activity"
+                    x="133"
+                    y="20"
+                    width="14"
+                    height="14"
+                    style="color: #f43f5e"
+                  />
+                  <text class="n-label" x="164" y="25">homepage</text>
+                  <circle cx="167" cy="35.5" r="3" fill="#10b981" />
+                  <text class="n-status" x="174" y="39">Running</text>
+                  <line class="n-div" x1="263.5" y1="15" x2="263.5" y2="39" />
+                  <text class="n-kind" x="286" y="30" text-anchor="end">
+                    CT
+                  </text>
+                </g>
               </svg>
               <span>Dashboard</span>
             </li>
             <li>
               <svg class="tsvg" viewBox="0 0 300 54" aria-hidden="true">
-              <circle class="stub" cx="6" cy="27" r="3.5" />
-              <path class="edge-path" stroke="#f59e0b" d="M10,27 C62,27 62,27 114,27" />
-              <g class="n">
-              <rect class="n-box" x="114.5" y="2.5" width="183" height="49" rx="8" />
-              <rect x="126.5" y="13.5" width="27" height="27" rx="6" fill="#f59e0b" fill-opacity="0.1" stroke="#f59e0b" stroke-opacity="0.2" />
-              <use href="#i-database" x="133" y="20" width="14" height="14" style="color:#f59e0b" />
-              <text class="n-label" x="164" y="25">mariadb</text>
-              <circle cx="167" cy="35.5" r="3" fill="#10b981" />
-              <text class="n-status" x="174" y="39">Running</text>
-              <line class="n-div" x1="263.5" y1="15" x2="263.5" y2="39" />
-              <text class="n-kind" x="286" y="30" text-anchor="end">CT</text>
-              </g>
+                <circle class="stub" cx="6" cy="27" r="3.5" />
+                <path
+                  class="edge-path"
+                  stroke="#f59e0b"
+                  d="M10,27 C62,27 62,27 114,27"
+                />
+                <g class="n">
+                  <rect
+                    class="n-box"
+                    x="114.5"
+                    y="2.5"
+                    width="183"
+                    height="49"
+                    rx="8"
+                  />
+                  <rect
+                    x="126.5"
+                    y="13.5"
+                    width="27"
+                    height="27"
+                    rx="6"
+                    fill="#f59e0b"
+                    fill-opacity="0.1"
+                    stroke="#f59e0b"
+                    stroke-opacity="0.2"
+                  />
+                  <use
+                    href="#i-database"
+                    x="133"
+                    y="20"
+                    width="14"
+                    height="14"
+                    style="color: #f59e0b"
+                  />
+                  <text class="n-label" x="164" y="25">mariadb</text>
+                  <circle cx="167" cy="35.5" r="3" fill="#10b981" />
+                  <text class="n-status" x="174" y="39">Running</text>
+                  <line class="n-div" x1="263.5" y1="15" x2="263.5" y2="39" />
+                  <text class="n-kind" x="286" y="30" text-anchor="end">
+                    CT
+                  </text>
+                </g>
               </svg>
               <span>Database</span>
             </li>
             <li>
               <svg class="tsvg" viewBox="0 0 300 54" aria-hidden="true">
-              <circle class="stub" cx="6" cy="27" r="3.5" />
-              <path class="edge-path" stroke="#06b6d4" d="M10,27 C62,27 62,27 114,27" />
-              <g class="n">
-              <rect class="n-box" x="114.5" y="2.5" width="183" height="49" rx="8" />
-              <rect x="126.5" y="13.5" width="27" height="27" rx="6" fill="#06b6d4" fill-opacity="0.1" stroke="#06b6d4" stroke-opacity="0.2" />
-              <use href="#i-layout" x="133" y="20" width="14" height="14" style="color:#06b6d4" />
-              <text class="n-label" x="164" y="25">docker-host</text>
-              <circle cx="167" cy="35.5" r="3" fill="#10b981" />
-              <text class="n-status" x="174" y="39">Running</text>
-              <line class="n-div" x1="263.5" y1="15" x2="263.5" y2="39" />
-              <text class="n-kind" x="286" y="30" text-anchor="end">CT</text>
-              </g>
+                <circle class="stub" cx="6" cy="27" r="3.5" />
+                <path
+                  class="edge-path"
+                  stroke="#06b6d4"
+                  d="M10,27 C62,27 62,27 114,27"
+                />
+                <g class="n">
+                  <rect
+                    class="n-box"
+                    x="114.5"
+                    y="2.5"
+                    width="183"
+                    height="49"
+                    rx="8"
+                  />
+                  <rect
+                    x="126.5"
+                    y="13.5"
+                    width="27"
+                    height="27"
+                    rx="6"
+                    fill="#06b6d4"
+                    fill-opacity="0.1"
+                    stroke="#06b6d4"
+                    stroke-opacity="0.2"
+                  />
+                  <use
+                    href="#i-layout"
+                    x="133"
+                    y="20"
+                    width="14"
+                    height="14"
+                    style="color: #06b6d4"
+                  />
+                  <text class="n-label" x="164" y="25">docker-host</text>
+                  <circle cx="167" cy="35.5" r="3" fill="#10b981" />
+                  <text class="n-status" x="174" y="39">Running</text>
+                  <line class="n-div" x1="263.5" y1="15" x2="263.5" y2="39" />
+                  <text class="n-kind" x="286" y="30" text-anchor="end">
+                    CT
+                  </text>
+                </g>
               </svg>
               <span>Container</span>
             </li>
@@ -1742,12 +2312,24 @@
         <div class="wrap">
           <div class="sec-head">
             <h2>Click a node, read its vitals.</h2>
-            <p class="lede">Usage, history, cluster health and power, live from Proxmox.</p>
+            <p class="lede">
+              Usage, history, cluster health and power, live from Proxmox.
+            </p>
           </div>
           <div class="trio">
             <figure class="vital">
               <div class="vital-shot">
-                <picture><source srcset="assets/infralens/vitals-usage.webp?v=2" type="image/webp" /><img src="assets/infralens/vitals-usage.png?v=2" alt="Resource usage for nextcloud: CPU 0.1%, memory 284.0 MB of 2.0 GB at 14%, disk 2.8 of 97.9 GB at 3%." width="1695" height="1020" loading="lazy" /></picture>
+                <picture
+                  ><source
+                    srcset="assets/infralens/vitals-usage.webp?v=2"
+                    type="image/webp" />
+                  <img
+                    src="assets/infralens/vitals-usage.png?v=2"
+                    alt="Resource usage for nextcloud: CPU 0.1%, memory 284.0 MB of 2.0 GB at 14%, disk 2.8 of 97.9 GB at 3%."
+                    width="1695"
+                    height="1020"
+                    loading="lazy"
+                /></picture>
               </div>
               <figcaption>
                 <h3>Resource usage</h3>
@@ -1756,7 +2338,17 @@
             </figure>
             <figure class="vital">
               <div class="vital-shot">
-                <picture><source srcset="assets/infralens/vitals-history.webp?v=2" type="image/webp" /><img src="assets/infralens/vitals-history.png?v=2" alt="An hour of history for nextcloud: CPU averaging 1% and now at 0%, memory steady at 14%, each with a short spike when it started." width="1695" height="1080" loading="lazy" /></picture>
+                <picture
+                  ><source
+                    srcset="assets/infralens/vitals-history.webp?v=2"
+                    type="image/webp" />
+                  <img
+                    src="assets/infralens/vitals-history.png?v=2"
+                    alt="An hour of history for nextcloud: CPU averaging 1% and now at 0%, memory steady at 14%, each with a short spike when it started."
+                    width="1695"
+                    height="1080"
+                    loading="lazy"
+                /></picture>
               </div>
               <figcaption>
                 <h3>History</h3>
@@ -1765,7 +2357,17 @@
             </figure>
             <figure class="vital">
               <div class="vital-shot">
-                <picture><source srcset="assets/infralens/attention.webp" type="image/webp" /><img src="assets/infralens/attention.png" alt="Cluster overview: 5 nodes, 4 of 5 online, 3 guests running, 7 services, 1 host, 0 VMs, 4 containers, 1 down." width="1695" height="1010" loading="lazy" /></picture>
+                <picture
+                  ><source
+                    srcset="assets/infralens/attention.webp"
+                    type="image/webp" />
+                  <img
+                    src="assets/infralens/attention.png"
+                    alt="Cluster overview: 5 nodes, 4 of 5 online, 3 guests running, 7 services, 1 host, 0 VMs, 4 containers, 1 down."
+                    width="1695"
+                    height="1010"
+                    loading="lazy"
+                /></picture>
               </div>
               <figcaption>
                 <h3>Cluster health</h3>
@@ -1774,11 +2376,23 @@
             </figure>
             <figure class="vital">
               <div class="vital-shot">
-                <picture><source srcset="assets/infralens/vitals-power.webp?v=2" type="image/webp" /><img src="assets/infralens/vitals-power.png?v=2" alt="Power controls after one click on Shutdown: the button has turned red and asks Confirm shutdown?" width="1695" height="445" loading="lazy" /></picture>
+                <picture
+                  ><source
+                    srcset="assets/infralens/vitals-power.webp?v=2"
+                    type="image/webp" />
+                  <img
+                    src="assets/infralens/vitals-power.png?v=2"
+                    alt="Power controls after one click on Shutdown: the button has turned red and asks Confirm shutdown?"
+                    width="1695"
+                    height="445"
+                    loading="lazy"
+                /></picture>
               </div>
               <figcaption>
                 <h3>Power controls</h3>
-                <p>Start, stop, reboot or shut down, with a confirmation first.</p>
+                <p>
+                  Start, stop, reboot or shut down, with a confirmation first.
+                </p>
               </figcaption>
             </figure>
           </div>
@@ -1800,7 +2414,7 @@
               <div class="msg">
                 <p class="who">InfraLens answers</p>
                 <p class="answer">
-                Yes, <mark>nextcloud</mark> is using 1.8 GB of its 2 GB, about
+                  Yes, <mark>nextcloud</mark> is using 1.8 GB of its 2 GB, about
                   90%. Consider raising its memory limit before it starts
                   swapping.
                 </p>
@@ -1809,104 +2423,247 @@
             <div class="context">
               <p class="who">Memory it already knew</p>
               <ul class="nodes">
-                <li class="hot"><span class="dot"></span><b>nextcloud</b><span>1.8 / 2.0 GB</span></li>
-                <li><span class="dot"></span><b>homepage</b><span>142 MB / 1.0 GB</span></li>
-                <li><span class="dot"></span><b>pihole</b><span>98 MB / 512 MB</span></li>
+                <li class="hot">
+                  <span class="dot"></span><b>nextcloud</b
+                  ><span>1.8 / 2.0 GB</span>
+                </li>
+                <li>
+                  <span class="dot"></span><b>homepage</b
+                  ><span>142 MB / 1.0 GB</span>
+                </li>
+                <li>
+                  <span class="dot"></span><b>pihole</b
+                  ><span>98 MB / 512 MB</span>
+                </li>
               </ul>
-              <p class="ctx-note">The live state of every node goes with each question.</p>
+              <p class="ctx-note">
+                The live state of every node goes with each question.
+              </p>
             </div>
           </figure>
-          <p class="net-note"><span class="dot"></span>Answered by Ollama on your machine. No cloud, no account, no telemetry.</p>
-
+          <p class="net-note">
+            <span class="dot"></span>Answered by Ollama on your machine. No
+            cloud, no account, no telemetry.
+          </p>
         </div>
       </section>
 
       <section class="install paper" id="install">
         <div class="wrap inst">
           <svg class="sym" aria-hidden="true">
-            <symbol id="i-apple" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" d="M16.37 12.7c-.02-2.36 1.93-3.5 2.02-3.55-1.1-1.61-2.81-1.83-3.42-1.85-1.45-.15-2.84.86-3.58.86-.74 0-1.88-.84-3.09-.82-1.59.02-3.06.93-3.88 2.35-1.66 2.87-.42 7.12 1.19 9.45.79 1.14 1.73 2.42 2.96 2.37 1.19-.05 1.64-.77 3.08-.77 1.43 0 1.84.77 3.1.74 1.28-.02 2.09-1.16 2.87-2.31.91-1.32 1.28-2.6 1.3-2.67-.03-.01-2.5-.96-2.53-3.8ZM14.01 5.76c.65-.79 1.09-1.89.97-2.99-.94.04-2.08.63-2.75 1.42-.6.7-1.13 1.82-.99 2.89 1.05.08 2.12-.53 2.77-1.32Z" /></symbol>
-            <symbol id="i-tux" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c-2.5 0-3.9 2.1-3.9 4.9 0 1.2-.4 2.3-1.2 3.5C5.7 12.8 4.6 14.8 4.6 17c0 2.6 2.9 4.5 7.4 4.5s7.4-1.9 7.4-4.5c0-2.2-1.1-4.2-2.3-6.1-.8-1.2-1.2-2.3-1.2-3.5 0-2.8-1.4-4.9-3.9-4.9Z" /><path d="M9.6 12.6c-.8 1.3-1.2 2.7-1.2 4.1 0 1.8 1.6 2.9 3.6 2.9s3.6-1.1 3.6-2.9c0-1.4-.4-2.8-1.2-4.1" /><path d="m10.8 8.9 1.2 1 1.2-1" /><circle cx="10.6" cy="6.7" r=".5" fill="currentColor" /><circle cx="13.4" cy="6.7" r=".5" fill="currentColor" /></symbol>
-            <symbol id="i-pkg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73zM12 22V12" /><path d="m3.3 7 7.7 4.73a2 2 0 0 0 2 0L20.7 7M7.5 4.27l9 5.15" /></symbol>
+            <symbol id="i-apple" viewBox="0 0 24 24">
+              <path
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linejoin="round"
+                d="M16.37 12.7c-.02-2.36 1.93-3.5 2.02-3.55-1.1-1.61-2.81-1.83-3.42-1.85-1.45-.15-2.84.86-3.58.86-.74 0-1.88-.84-3.09-.82-1.59.02-3.06.93-3.88 2.35-1.66 2.87-.42 7.12 1.19 9.45.79 1.14 1.73 2.42 2.96 2.37 1.19-.05 1.64-.77 3.08-.77 1.43 0 1.84.77 3.1.74 1.28-.02 2.09-1.16 2.87-2.31.91-1.32 1.28-2.6 1.3-2.67-.03-.01-2.5-.96-2.53-3.8ZM14.01 5.76c.65-.79 1.09-1.89.97-2.99-.94.04-2.08.63-2.75 1.42-.6.7-1.13 1.82-.99 2.89 1.05.08 2.12-.53 2.77-1.32Z"
+              />
+            </symbol>
+            <symbol
+              id="i-tux"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M12 2.5c-2.5 0-3.9 2.1-3.9 4.9 0 1.2-.4 2.3-1.2 3.5C5.7 12.8 4.6 14.8 4.6 17c0 2.6 2.9 4.5 7.4 4.5s7.4-1.9 7.4-4.5c0-2.2-1.1-4.2-2.3-6.1-.8-1.2-1.2-2.3-1.2-3.5 0-2.8-1.4-4.9-3.9-4.9Z"
+              />
+              <path
+                d="M9.6 12.6c-.8 1.3-1.2 2.7-1.2 4.1 0 1.8 1.6 2.9 3.6 2.9s3.6-1.1 3.6-2.9c0-1.4-.4-2.8-1.2-4.1"
+              />
+              <path d="m10.8 8.9 1.2 1 1.2-1" />
+              <circle cx="10.6" cy="6.7" r=".5" fill="currentColor" />
+              <circle cx="13.4" cy="6.7" r=".5" fill="currentColor" />
+            </symbol>
+            <symbol
+              id="i-pkg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73zM12 22V12"
+              />
+              <path d="m3.3 7 7.7 4.73a2 2 0 0 0 2 0L20.7 7M7.5 4.27l9 5.15" />
+            </symbol>
           </svg>
 
           <div class="inst-head">
             <h2>Install InfraLens</h2>
             <p class="lede">One native app. Nothing else to run.</p>
-            <p class="inst-req">Needs a Proxmox VE host with an API token. Ollama is optional, for the assistant.</p>
+            <p class="inst-req">
+              Needs a Proxmox VE host with an API token. Ollama is optional, for
+              the assistant.
+            </p>
           </div>
 
           <div class="stages">
             <div class="stage">
               <h3 class="stage-h">Download</h3>
-            <div class="builds">
-              <div class="build">
-                <svg class="ico" aria-hidden="true"><use href="#i-apple" /></svg>
-                <span class="b-os">macOS</span>
-                <span class="b-sub">Apple Silicon</span>
-                <span class="b-foot">
-                  <span class="b-file"><code>InfraLens_0.2.0_aarch64.dmg</code>26.7 MB</span>
-                  <a class="b-get" href="https://github.com/AdamYahmadi/InfraLens/releases/download/v0.2.0/InfraLens_0.2.0_aarch64.dmg">Download<svg class="ico-dl" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.5v8M4.5 7 8 10.5 11.5 7M3.5 13.5h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg><span class="sr"> macOS .dmg</span></a>
-                </span>
+              <div class="builds">
+                <div class="build">
+                  <svg class="ico" aria-hidden="true">
+                    <use href="#i-apple" />
+                  </svg>
+                  <span class="b-os">macOS</span>
+                  <span class="b-sub">Apple Silicon</span>
+                  <span class="b-foot">
+                    <span class="b-file"
+                      ><code>InfraLens_0.2.0_aarch64.dmg</code>26.7 MB</span
+                    >
+                    <a
+                      class="b-get"
+                      href="https://github.com/AdamYahmadi/InfraLens/releases/download/v0.2.0/InfraLens_0.2.0_aarch64.dmg"
+                      >Download<svg
+                        class="ico-dl"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M8 2.5v8M4.5 7 8 10.5 11.5 7M3.5 13.5h9"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        /></svg
+                      ><span class="sr"> macOS .dmg</span></a
+                    >
+                  </span>
+                </div>
+                <div class="build">
+                  <svg class="ico" aria-hidden="true">
+                    <use href="#i-tux" />
+                  </svg>
+                  <span class="b-os">Linux</span>
+                  <span class="b-sub">Any distro, AppImage</span>
+                  <span class="b-foot">
+                    <span class="b-file"
+                      ><code>InfraLens_0.2.0_amd64.AppImage</code>120.7 MB</span
+                    >
+                    <a
+                      class="b-get"
+                      href="https://github.com/AdamYahmadi/InfraLens/releases/download/v0.2.0/InfraLens_0.2.0_amd64.AppImage"
+                      >Download<svg
+                        class="ico-dl"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M8 2.5v8M4.5 7 8 10.5 11.5 7M3.5 13.5h9"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        /></svg
+                      ><span class="sr"> Linux AppImage</span></a
+                    >
+                  </span>
+                </div>
+                <div class="build">
+                  <svg class="ico" aria-hidden="true">
+                    <use href="#i-pkg" />
+                  </svg>
+                  <span class="b-os">Debian / Ubuntu</span>
+                  <span class="b-sub">x86_64, .deb package</span>
+                  <span class="b-foot">
+                    <span class="b-file"
+                      ><code>InfraLens_0.2.0_amd64.deb</code>43.3 MB</span
+                    >
+                    <a
+                      class="b-get"
+                      href="https://github.com/AdamYahmadi/InfraLens/releases/download/v0.2.0/InfraLens_0.2.0_amd64.deb"
+                      >Download<svg
+                        class="ico-dl"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M8 2.5v8M4.5 7 8 10.5 11.5 7M3.5 13.5h9"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        /></svg
+                      ><span class="sr"> Debian / Ubuntu .deb</span></a
+                    >
+                  </span>
+                </div>
               </div>
-              <div class="build">
-                <svg class="ico" aria-hidden="true"><use href="#i-tux" /></svg>
-                <span class="b-os">Linux</span>
-                <span class="b-sub">Any distro, AppImage</span>
-                <span class="b-foot">
-                  <span class="b-file"><code>InfraLens_0.2.0_amd64.AppImage</code>120.7 MB</span>
-                  <a class="b-get" href="https://github.com/AdamYahmadi/InfraLens/releases/download/v0.2.0/InfraLens_0.2.0_amd64.AppImage">Download<svg class="ico-dl" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.5v8M4.5 7 8 10.5 11.5 7M3.5 13.5h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg><span class="sr"> Linux AppImage</span></a>
-                </span>
-              </div>
-              <div class="build">
-                <svg class="ico" aria-hidden="true"><use href="#i-pkg" /></svg>
-                <span class="b-os">Debian / Ubuntu</span>
-                <span class="b-sub">x86_64, .deb package</span>
-                <span class="b-foot">
-                  <span class="b-file"><code>InfraLens_0.2.0_amd64.deb</code>43.3 MB</span>
-                  <a class="b-get" href="https://github.com/AdamYahmadi/InfraLens/releases/download/v0.2.0/InfraLens_0.2.0_amd64.deb">Download<svg class="ico-dl" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.5v8M4.5 7 8 10.5 11.5 7M3.5 13.5h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg><span class="sr"> Debian / Ubuntu .deb</span></a>
-                </span>
-              </div>
-            </div>
-            <p class="p-note" id="p-note" hidden>There's no Windows build yet. InfraLens runs on macOS and Linux.</p>
+              <p class="p-note" id="p-note" hidden>
+                There's no Windows build yet. InfraLens runs on macOS and Linux.
+              </p>
 
-            <div class="docs">
-              <section class="doc" id="mac-notes" aria-labelledby="mac-notes-h">
-                <h3 class="inst-h" id="mac-notes-h">First launch on macOS</h3>
-                <p>
-                  InfraLens isn't notarized by Apple yet, so macOS may block the
-                  first launch.
-                </p>
-                <ol>
-                  <li>Move InfraLens to Applications.</li>
-                  <li>
-                    Run this command:
-                    <div class="cmd-wrap"><pre class="cmd"><span class="k">xattr</span> <span class="f">-cr</span> <span class="u">/Applications/InfraLens.app</span></pre><button class="copy" type="button">Copy</button></div>
-                  </li>
-                  <li>
-                    Open InfraLens and allow Local Network access under System
-                    Settings → Privacy &amp; Security, so it can reach your
-                    Proxmox host.
-                  </li>
-                </ol>
-              </section>
-              <section class="doc" id="linux-notes" aria-labelledby="linux-notes-h">
-                <h3 class="inst-h" id="linux-notes-h">Running on Linux</h3>
-                <p>Make the AppImage executable, then run it:</p>
-                <div class="cmd-wrap"><pre class="cmd"><span class="k">chmod</span> <span class="f">+x</span> <span class="u">InfraLens_0.2.0_amd64.AppImage</span>
-<span class="k">./InfraLens_0.2.0_amd64.AppImage</span></pre><button class="copy" type="button">Copy</button></div>
-                <p>Or install the Debian package:</p>
-                <div class="cmd-wrap"><pre class="cmd"><span class="k">sudo</span> <span class="k">dpkg</span> <span class="f">-i</span> <span class="u">InfraLens_0.2.0_amd64.deb</span></pre><button class="copy" type="button">Copy</button></div>
-              </section>
-            </div>
+              <div class="docs">
+                <section
+                  class="doc"
+                  id="mac-notes"
+                  aria-labelledby="mac-notes-h"
+                >
+                  <h3 class="inst-h" id="mac-notes-h">First launch on macOS</h3>
+                  <p>
+                    InfraLens isn't notarized by Apple yet, so macOS may block
+                    the first launch.
+                  </p>
+                  <ol>
+                    <li>Move InfraLens to Applications.</li>
+                    <li>
+                      Run this command:
+                      <div class="cmd-wrap">
+                        <pre
+                          class="cmd"
+                        ><span class="k">xattr</span> <span class="f">-cr</span> <span class="u">/Applications/InfraLens.app</span></pre>
+                        <button class="copy" type="button">Copy</button>
+                      </div>
+                    </li>
+                    <li>
+                      Open InfraLens and allow Local Network access under System
+                      Settings → Privacy &amp; Security, so it can reach your
+                      Proxmox host.
+                    </li>
+                  </ol>
+                </section>
+                <section
+                  class="doc"
+                  id="linux-notes"
+                  aria-labelledby="linux-notes-h"
+                >
+                  <h3 class="inst-h" id="linux-notes-h">Running on Linux</h3>
+                  <p>Make the AppImage executable, then run it:</p>
+                  <div class="cmd-wrap">
+                    <pre
+                      class="cmd"
+                    ><span class="k">chmod</span> <span class="f">+x</span> <span class="u">InfraLens_0.2.0_amd64.AppImage</span>
+<span class="k">./InfraLens_0.2.0_amd64.AppImage</span></pre>
+                    <button class="copy" type="button">Copy</button>
+                  </div>
+                  <p>Or install the Debian package:</p>
+                  <div class="cmd-wrap">
+                    <pre
+                      class="cmd"
+                    ><span class="k">sudo</span> <span class="k">dpkg</span> <span class="f">-i</span> <span class="u">InfraLens_0.2.0_amd64.deb</span></pre>
+                    <button class="copy" type="button">Copy</button>
+                  </div>
+                </section>
+              </div>
 
-            <p class="release">
-              <a
-                href="https://github.com/AdamYahmadi/InfraLens/releases/tag/v0.2.0"
-                target="_blank"
-                rel="noopener"
-                >Release notes · v0.2.0 <span aria-hidden="true">→</span></a
-              >
-            </p>
+              <p class="release">
+                <a
+                  href="https://github.com/AdamYahmadi/InfraLens/releases/tag/v0.2.0"
+                  target="_blank"
+                  rel="noopener"
+                  >Release notes · v0.2.0 <span aria-hidden="true">→</span></a
+                >
+              </p>
             </div>
 
             <div class="setup stage">
@@ -1917,10 +2674,14 @@
                     <h4>Connect your cluster</h4>
                   </li>
                   <li>
-                    <h4>Detect services <span class="optional">optional</span></h4>
+                    <h4>
+                      Detect services <span class="optional">optional</span>
+                    </h4>
                   </li>
                   <li>
-                    <h4>Connect local AI <span class="optional">optional</span></h4>
+                    <h4>
+                      Connect local AI <span class="optional">optional</span>
+                    </h4>
                   </li>
                 </ol>
               </div>
@@ -1932,12 +2693,16 @@
                   data-dpr="2"
                   aria-label="Enlarge screenshot of the first-run setup"
                 >
-                  <picture><source srcset="assets/infralens/onboarding.webp" type="image/webp" /><img
-                    src="assets/infralens/onboarding.png"
-                    alt="First-run setup, step 1 of 3: Connect your cluster, with host 192.168.178.50 and port 8006 filled in, fields for API user, token name and token value, and SSH probe and Neural link listed as the next steps."
-                    width="1000"
-                    height="530"
-                    loading="lazy"
+                  <picture
+                    ><source
+                      srcset="assets/infralens/onboarding.webp"
+                      type="image/webp" />
+                    <img
+                      src="assets/infralens/onboarding.png"
+                      alt="First-run setup, step 1 of 3: Connect your cluster, with host 192.168.178.50 and port 8006 filled in, fields for API user, token name and token value, and SSH probe and Neural link listed as the next steps."
+                      width="1000"
+                      height="530"
+                      loading="lazy"
                   /></picture>
                 </button>
               </div>
@@ -1945,11 +2710,17 @@
 
             <div class="stage">
               <h3 class="stage-h">Build from source</h3>
-              <p class="stage-lede">A Python backend and a React frontend. Run both locally to work on InfraLens itself.</p>
+              <p class="stage-lede">
+                A Python backend and a React frontend. Run both locally to work
+                on InfraLens itself.
+              </p>
               <div class="source terms">
                 <div class="term">
-                  <p class="term-bar"><span class="term-dots" aria-hidden="true"></span>backend</p>
-                  <div class="cmd-wrap"><pre class="cmd"><span class="c"># Clone the repo</span>
+                  <p class="term-bar">
+                    <span class="term-dots" aria-hidden="true"></span>backend
+                  </p>
+                  <div class="cmd-wrap">
+                    <pre class="cmd"><span class="c"># Clone the repo</span>
 <span class="k">git</span> clone <span class="u">https://github.com/AdamYahmadi/InfraLens.git</span>
 <span class="k">cd</span> <span class="u">InfraLens/backend</span>
 
@@ -1961,11 +2732,18 @@
 <span class="k">cp</span> <span class="u">.env.example</span> <span class="u">.env</span>
 
 <span class="c"># Run</span>
-<span class="k">python</span> <span class="u">main.py</span></pre><button class="copy" type="button">Copy</button></div>
+<span class="k">python</span> <span class="u">main.py</span></pre>
+                    <button class="copy" type="button">Copy</button>
+                  </div>
                 </div>
                 <div class="term">
-                  <p class="term-bar"><span class="term-dots" aria-hidden="true"></span>frontend</p>
-                  <div class="cmd-wrap"><pre class="cmd"><span class="c"># Install dependencies</span>
+                  <p class="term-bar">
+                    <span class="term-dots" aria-hidden="true"></span>frontend
+                  </p>
+                  <div class="cmd-wrap">
+                    <pre
+                      class="cmd"
+                    ><span class="c"># Install dependencies</span>
 <span class="k">cd</span> <span class="u">InfraLens/frontend</span>
 <span class="k">npm</span> install
 
@@ -1973,7 +2751,9 @@
 VITE_API_URL=<span class="s">"http://127.0.0.1:8756"</span>
 
 <span class="c"># Start the dev server</span>
-<span class="k">npm</span> run dev</pre><button class="copy" type="button">Copy</button></div>
+<span class="k">npm</span> run dev</pre>
+                    <button class="copy" type="button">Copy</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1987,15 +2767,40 @@ VITE_API_URL=<span class="s">"http://127.0.0.1:8756"</span>
         <div class="foot-top">
           <div class="foot-author">
             <p>Built by</p>
-            <a href="https://adamyahmadi.com">Adam Yahmadi <span aria-hidden="true">↗</span></a>
+            <a href="https://adamyahmadi.com"
+              >Adam Yahmadi <span aria-hidden="true">↗</span></a
+            >
           </div>
           <ul class="foot-links">
-            <li><a href="https://github.com/AdamYahmadi/InfraLens" target="_blank" rel="noopener">GitHub</a></li>
-            <li><a href="https://github.com/AdamYahmadi/InfraLens/issues" target="_blank" rel="noopener">Report an issue</a></li>
-            <li><a href="https://github.com/AdamYahmadi/InfraLens#readme" target="_blank" rel="noopener">Docs</a></li>
+            <li>
+              <a
+                href="https://github.com/AdamYahmadi/InfraLens"
+                target="_blank"
+                rel="noopener"
+                >GitHub</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://github.com/AdamYahmadi/InfraLens/issues"
+                target="_blank"
+                rel="noopener"
+                >Report an issue</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://github.com/AdamYahmadi/InfraLens#readme"
+                target="_blank"
+                rel="noopener"
+                >Docs</a
+              >
+            </li>
           </ul>
         </div>
-        <p class="foot-bottom">InfraLens · open source under the MIT license · 2026</p>
+        <p class="foot-bottom">
+          InfraLens · open source under the MIT license · 2026
+        </p>
       </div>
     </footer>
 
@@ -2011,8 +2816,48 @@ VITE_API_URL=<span class="s">"http://127.0.0.1:8756"</span>
 
     <script>
       const nav = document.getElementById("nav");
-      const onScroll = () =>
+      const toggle = nav.querySelector(".nav-toggle");
+      const closeBtn = nav.querySelector(".nav-close");
+      const setMenu = (open) => {
+        nav.classList.toggle("open", open);
+        toggle.setAttribute("aria-expanded", open);
+        document.body.style.overflow = open ? "hidden" : "";
+        if (open) closeBtn.focus();
+      };
+      const closeMenu = () => {
+        setMenu(false);
+        toggle.focus();
+      };
+      toggle.addEventListener("click", () => setMenu(true));
+      closeBtn.addEventListener("click", closeMenu);
+      nav
+        .querySelector(".nav-backdrop")
+        .addEventListener("click", () => setMenu(false));
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && nav.classList.contains("open")) closeMenu();
+      });
+      window
+        .matchMedia("(min-width: 981px)")
+        .addEventListener("change", (e) => e.matches && setMenu(false));
+
+      const navLinks = [...nav.querySelectorAll(".nav-links a")];
+      const sections = navLinks.map((a) =>
+        document.querySelector(a.getAttribute("href")),
+      );
+      navLinks.forEach((a) =>
+        a.addEventListener("click", () => setMenu(false)),
+      );
+      const onScroll = () => {
         nav.classList.toggle("scrolled", window.scrollY > 8);
+        const y = window.innerHeight * 0.35;
+        let current = -1;
+        sections.forEach((sec, i) => {
+          if (sec && sec.getBoundingClientRect().top <= y) current = i;
+        });
+        navLinks.forEach((a, i) =>
+          a.setAttribute("aria-current", i === current ? "true" : "false"),
+        );
+      };
       onScroll();
       window.addEventListener("scroll", onScroll, { passive: true });
 
@@ -2023,52 +2868,34 @@ VITE_API_URL=<span class="s">"http://127.0.0.1:8756"</span>
       const setActual = (on) => {
         lbStage.classList.toggle("actual", on);
         lbSize.textContent = on ? "Fit to screen" : "Actual size";
-        lbImg.style.width = on ? lbImg.naturalWidth / (+lb.dataset.dpr || 2) + "px" : "";
+        lbImg.style.width = on
+          ? lbImg.naturalWidth / (+lb.dataset.dpr || 2) + "px"
+          : "";
       };
+      const toggleActual = () =>
+        setActual(!lbStage.classList.contains("actual"));
       document.querySelectorAll("[data-zoom]").forEach((el) => {
         el.addEventListener("click", () => {
           const img = el.querySelector("img");
-          lbImg.src = el.dataset.src || img.currentSrc || img.getAttribute("src");
+          lbImg.src =
+            el.dataset.src || img.currentSrc || img.getAttribute("src");
           lbImg.alt = img.alt;
           lb.dataset.dpr = el.dataset.dpr || 2;
           setActual(false);
           lb.showModal();
         });
       });
-      lbSize.addEventListener("click", () =>
-        setActual(!lbStage.classList.contains("actual")),
-      );
-      lbImg.addEventListener("click", () =>
-        setActual(!lbStage.classList.contains("actual")),
-      );
-      document.getElementById("lb-close").addEventListener("click", () => lb.close());
+      lbSize.addEventListener("click", toggleActual);
+      lbImg.addEventListener("click", toggleActual);
+      document
+        .getElementById("lb-close")
+        .addEventListener("click", () => lb.close());
       lbStage.addEventListener("click", (e) => {
         if (e.target === lbStage) lb.close();
       });
 
-      const navLinks = [...document.querySelectorAll(".nav-links a")];
-      const sections = navLinks.map((a) => document.querySelector(a.getAttribute("href")));
-      const markNav = () => {
-        const y = window.innerHeight * 0.35;
-        let current = -1;
-        sections.forEach((sec, i) => {
-          if (sec && sec.getBoundingClientRect().top <= y) current = i;
-        });
-        navLinks.forEach((a, i) => a.setAttribute("aria-current", i === current ? "true" : "false"));
-      };
-      markNav();
-      window.addEventListener("scroll", markNav, { passive: true });
-
-      const ua = navigator.userAgent;
-      const isWindows = /Windows/.test(ua);
-
-      if (isWindows) document.getElementById("p-note").hidden = false;
-
-      document
-        .querySelectorAll(".graph-pan, .win-pan")
-        .forEach((el) => {
-          el.scrollLeft = (el.scrollWidth - el.clientWidth) / 2;
-        });
+      if (/Windows/.test(navigator.userAgent))
+        document.getElementById("p-note").hidden = false;
 
       document.querySelectorAll(".copy").forEach((btn) => {
         btn.addEventListener("click", async () => {
@@ -2084,7 +2911,6 @@ VITE_API_URL=<span class="s">"http://127.0.0.1:8756"</span>
           } catch {}
         });
       });
-
     </script>
   </body>
 </html>
